@@ -22,6 +22,9 @@ jQuery(document).ready(function ($) {
       objects_count: objectsCountObject.val(),
       objects_per_page: objectsPerPageObject.val()
     };
+    if (page === 1) {
+      filterPaginationObject.html('');
+    }
     jQuery.ajax({
       method: 'POST',
       dataType: 'json',
@@ -41,7 +44,6 @@ jQuery(document).ready(function ($) {
           }
           if (page == 1) {
             if (responseData.data.pagination_data) {
-              filterPaginationObject.html(responseData.data.pagination_data);
               var paginationItemObject = $('#real-estate-objects-filter-pagination .pagination-item');
               if (paginationItemObject.length > 0) {
                 $('#real-estate-objects-filter-pagination .pagination-item').on('click', function () {
@@ -50,8 +52,6 @@ jQuery(document).ready(function ($) {
                   runRealEstateFilter($(this).text());
                 });
               }
-            } else {
-              filterPaginationObject.html('');
             }
           }
         }
