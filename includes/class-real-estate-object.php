@@ -164,6 +164,9 @@ class Real_Estate_Object {
 
 		$this->loader->add_action( 'widgets_init', $plugin_admin, 'register_custom_widget' );
 
+		$this->loader->add_action( 'wp_ajax_real_estate_object_run_filter', $plugin_admin, 'real_estate_object_run_filter_callback' );
+		$this->loader->add_action( 'wp_ajax_nopriv_real_estate_object_run_filter', $plugin_admin, 'real_estate_object_run_filter_callback' );
+
 	}
 
 	/**

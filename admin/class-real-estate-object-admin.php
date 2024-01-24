@@ -276,9 +276,9 @@ class Real_Estate_Object_Admin {
 								'id'    => '',
 							),
 							'choices'           => array(
-								'panel'      => __('Panel', $this->plugin_name),
-								'brick'      => __('Brick', $this->plugin_name),
-								'foam block' => __('Foam block', $this->plugin_name),
+								'panel'      => __( 'Panel', $this->plugin_name ),
+								'brick'      => __( 'Brick', $this->plugin_name ),
+								'foam block' => __( 'Foam block', $this->plugin_name ),
 							),
 							'default_value'     => 'panel',
 							'return_format'     => 'value',
@@ -318,7 +318,161 @@ class Real_Estate_Object_Admin {
 	 * @since    1.0.0
 	 */
 	public function register_custom_widget() {
-		register_widget('Real_Estate_Object_Widget');
+		register_widget( 'Real_Estate_Object_Widget' );
+	}
+
+	/**
+	 * Filter Ajax callback function.
+	 *
+	 * @since    1.0.0
+	 */
+	public function real_estate_object_run_filter_callback() {
+		$pagination_data = '';
+
+		$page             = empty( $_POST['page'] ) ? 1 : $_POST['page'];
+		$objects_per_page = empty( $_POST['objects_per_page'] ) ? 3 : $_POST['objects_per_page'];
+		$objects_count    = empty( $_POST['objects_count'] ) ? 10 : $_POST['objects_count'];
+
+		if ( empty( $_POST['building_name'] ) && empty( $_POST['location_coordinates'] ) && empty( $_POST['floors_number'] ) && empty( $_POST['structure_type'] ) ) {
+			$meta_query = '';
+		} else {
+			$meta_query = array(
+				'relation' => 'AND'
+			);
+
+			if ( ! empty( $_POST['building_name'] ) ) {
+				$meta_query[] = array(
+					array(
+						'key'     => 'building_name',
+						'value'   => $_POST['building_name'],
+						'compare' => '=',
+					),
+				);
+			};
+
+			if ( ! empty( $_POST['location_coordinates'] ) ) {
+				$meta_query[] = array(
+					array(
+						'key'     => 'location_coordinates',
+						'value'   => $_POST['location_coordinates'],
+						'compare' => '=',
+					),
+				);
+			};
+
+			if ( ! empty( $_POST['floors_number'] ) ) {
+				$meta_query[] = array(
+					array(
+						'key'     => 'floors_number',
+						'value'   => $_POST['floors_number'],
+						'compare' => '=',
+					),
+				);
+			};
+
+			if ( ! empty( $_POST['structure_type'] ) ) {
+				$meta_query[] = array(
+					array(
+						'key'     => 'structure_type',
+						'value'   => $_POST['structure_type'],
+						'compare' => '=',
+					),
+				);
+			};
+		}
+
+		if ( empty( $_POST['region'] ) ) {
+			$tax_query = '';
+		} else {
+			$tax_query = array(
+				array(
+					'taxonomy' => 'real_estates_region',
+					'field'    => 'slug',
+					'terms'    => $_POST['region'],
+				),
+			);
+		}
+
+		$args = array(
+			'post_type'      => 'real_estates',
+			'numberposts'    => $objects_count,
+			'posts_per_page' => $objects_per_page,
+			'offset'         => ( $page - 1 ) * $objects_per_page,
+			'meta_query'     => $meta_query,
+			'tax_query'      => $tax_query,
+		);
+
+		$real_estate_objects = get_posts( $args );
+
+		if ( ! empty( $real_estate_objects ) ) {
+			$real_estate_data = '<div class="real-estate__items">';
+
+			foreach ( $real_estate_objects as $real_estate_object ) {
+				$building_name        = get_field( 'building_name', $real_estate_object->ID ) ? get_field( 'building_name', $real_estate_object->ID ) : get_the_title();
+				$location_coordinates = get_field( 'location_coordinates', $real_estate_object->ID ) ? get_field( 'location_coordinates', $real_estate_object->ID ) : get_the_title();
+				$floors_number        = get_field( 'floors_number', $real_estate_object->ID ) ? get_field( 'floors_number', $real_estate_object->ID ) : 1;
+				$structure_type       = get_field( 'structure_type', $real_estate_object->ID ) ? get_field( 'structure_type', $real_estate_object->ID ) : __( 'Panel', 'real-estate-object' );
+
+				$region_list = wp_get_object_terms( $real_estate_object->ID, 'real_estates_region', array( 'fields' => 'names' ) );
+				$region      = empty( $region_list ) ? __( 'No regions', 'real-estate-object' ) : implode( ',', $region_list );
+
+				$real_estate_data .= '
+					<div class="real-estate__item">
+						<h3>' . $building_name . '</h3>
+						<p class="real-estate__location-coordinates">
+							<strong>' . __( 'Location coordinates: ', 'real-estate-object' ) . '</strong>
+							' . $location_coordinates . '
+						</p>
+						<p class="real-estate__floors-number">
+							<strong>' . __( 'Number of floors: ', 'real-estate-object' ) . '</strong>
+							' . $floors_number . '
+						</p>
+						<p class="real-estate__structure-type">
+							<strong>' . __( 'Type of Structure: ', 'real-estate-object' ) . '</strong>
+							' . $structure_type . '
+						</p>
+						<p class="real-estate__region">
+							<strong>' . __( 'Region: ', 'real-estate-object' ) . '</strong>
+							' . $region . '
+						</p>	
+					</div>			
+				';
+			}
+			$real_estate_data .= '</div>';
+
+			if ( $page == 1 ) {
+				$args_all = array(
+					'post_type'      => 'real_estates',
+					'numberposts'    => $objects_count,
+					'posts_per_page' => - 1,
+					'offset'         => 0,
+					'meta_query'     => $meta_query,
+					'tax_query'      => $tax_query,
+				);
+
+				$real_estate_pages_count = ceil( count( get_posts( $args_all ) ) / $objects_per_page );
+
+				if ($real_estate_pages_count > 1) {
+					$pagination_data .= '<p class="pagination-item pagination-item--active">1</p>';
+
+					for ( $i = 2; $i <= $real_estate_pages_count; $i ++ ) {
+						$pagination_data .= '<p class="pagination-item">' . $i . '</p>';
+					}
+				}
+			}
+		} else {
+			$real_estate_data = '<p>' . __( 'No data found', 'real-estate-object' ) . '</p>';
+		}
+
+		$response_data = array(
+			'response'         => 'Hello',
+			'post'             => $_POST,
+			'args'             => $args,
+			'real_estate_data' => $real_estate_data,
+			'pagination_data'  => $pagination_data
+		);
+
+		wp_send_json_success( $response_data );
 	}
 
 }

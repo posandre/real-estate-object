@@ -108,16 +108,11 @@ class Real_Estate_Object_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'assets/js/real-estate-object-public' . $suffix, array( 'jquery' ), $this->version, false );
 
-		$site_source = get_option('spc_options_source');
-		$site_url = ( $site_source == 'remote-site')
-			? get_option('spc_options_remote_site_url')
-			: get_site_url();
-
 		$json = json_encode( array(
-			'mainSiteUrl' => rtrim($site_url, '/'),
+			'ajax_url' => admin_url('admin-ajax.php'),
 		) );
 
-		wp_add_inline_script( $this->plugin_name, "const spcSettings = $json", 'before' );
+		wp_add_inline_script( $this->plugin_name, "const realEstateObjectSettings = $json", 'before' );
 	}
 
 	/**
@@ -159,51 +154,63 @@ class Real_Estate_Object_Public {
 			$classes[] =  $atts['class'];
 		}
 
+		$region_items = get_terms([
+			'taxonomy'      => 'real_estates_region',
+			'hide_empty'    => false,
+		]);
+
+		$region_options = '<option value="0">' .__('All', $this->plugin_name). '</option>';
+
+		foreach ($region_items as $region_item){
+			$region_options .= '<option value="' .$region_item->slug. '">' .$region_item->name. '</option>';
+		}
+
 		$output  = '
 		<div class="' . implode(' ', $classes). '">
 			<div class="real-estate-objects-filter__title"><h2>' . __('Real estate object filter', $this->plugin_name) . '</h2></div>
 			<div id="real-estate-objects-filter-form" class="real-estate-objects-filter__form">
 				<label for="building-name"><strong>' . __('Name of building: ', $this->plugin_name) . '</strong><input id="building-name" name="building-name" type="text" value=""></label>
 				<label for="location-coordinates"><strong>' . __('Location coordinates: ', $this->plugin_name) . '</strong><input id="location-coordinates" name="location-coordinates" type="text" value=""></label>
-				<label for="floors-number"><strong>' . __('floors-number: ', $this->plugin_name) . '</strong>
+				<label for="floors-number"><strong>' . __('Number of floors: ', $this->plugin_name) . '</strong>
 					<select id="floors-number" name="floors-number">
-					<option value="0">---</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-					<option value="13">13</option>
-					<option value="14">14</option>
-					<option value="15">15</option>
-					<option value="16">16</option>
-					<option value="17">17</option>
-					<option value="18">18</option>
-					<option value="19">19</option>
-					<option value="20">20</option>
+						<option value="0">' .__('All', $this->plugin_name). '</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
 					</select>
 				</label>
+				<label for="region"><strong>' . __('Region: ', $this->plugin_name) . '</strong>
+					<select id="region" name="region">' .$region_options. '</select>
+				</label>				
 				<fieldset>
 				    <legend>' .__('Please select type of structure:', $this->plugin_name). '</legend>
-				      <input type="radio" id="structure-type-1" name="structure-type" value="panel" />
-				      <label for="structure-type-1">' .__('Panel', $this->plugin_name). '</label>
-				
-				      <input type="radio" id="structure-type-2" name="structure-type" value="brick" />
-				      <label for="structure-type-2">' .__('Brick', $this->plugin_name). '</label>
-				
-				      <input type="radio" id="structure-type-3" name="structure-type" value="foam block" />
-				      <label for="structure-type-3">' .__('Foam block', $this->plugin_name). '</label>
+				      <label for="structure-type-2"><input type="radio" id="structure-type-2" name="structure-type" value="panel" >' .__('Panel', $this->plugin_name). '</label>		      
+				      <label for="structure-type-3"><input type="radio" id="structure-type-3" name="structure-type" value="brick" >' .__('Brick', $this->plugin_name). '</label>     
+				      <label for="structure-type-4"><input type="radio" id="structure-type-4" name="structure-type" value="foam block" >' .__('Foam block', $this->plugin_name). '</label>
 				</fieldset>				
-				<button id="real-estate-objects-filter-button" type="button">' .__('Filter', $this->plugin_name). '</button>		
+				<button id="real-estate-objects-filter-button" type="button">' .__('Filter', $this->plugin_name). '</button>
+				<input type="hidden" id="objects-count" name="objects-count" value="' .$atts['real_estate_objects_count']. '" />		
+				<input type="hidden" id="objects-per-page" name="objects-per-page" value="' .$atts['real_estate_objects_per_page']. '" />		
 			</div>
 			<div id="real-estate-objects-filter-results" class="real-estate-objects-filter__results"></div>
+			<div id="real-estate-objects-filter-pagination" class="real-estate-objects-filter__pagination"></div>
 		</div>
 		';
 
