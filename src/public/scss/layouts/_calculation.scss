@@ -1,0 +1,18 @@
+
+.school-price-calculator--start-calculation {
+  .school-price-calculator {
+    &__fields-wrapper {
+      display: none;
+    }
+
+    &__results {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__button {
+      opacity: 0.3;
+    }
+  }
+}

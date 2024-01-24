@@ -1,0 +1,11 @@
+.school-price-calculator--error-api {
+  .school-price-calculator {
+    &__results-list {
+      display: none;
+    }
+
+    &__error-message {
+      display: block;
+    }
+  }
+}
