@@ -1,0 +1,7 @@
+# Log files
+*.log
+
+# htaccess
+/.htaccess
+
+/src/node_modules/
