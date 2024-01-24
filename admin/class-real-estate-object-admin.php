@@ -466,9 +466,7 @@ class Real_Estate_Object_Admin {
 		}
 
 		$response_data = array(
-			'response'         => 'Hello',
-			'post'             => $_POST,
-			'args'             => $args,
+			'real_estate_pages_count'   => $real_estate_pages_count,
 			'real_estate_data' => $real_estate_data,
 			'pagination_data'  => $pagination_data
 		);
