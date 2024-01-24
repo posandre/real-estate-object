@@ -53,6 +53,12 @@ class Real_Estate_Object_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 
+		/**
+		 * The class responsible for defining Real estate object Widget
+		 * of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-real-estate-object-widget.php';
+
 	}
 
 	/**
@@ -304,6 +310,15 @@ class Real_Estate_Object_Admin {
 			);
 
 		}
+	}
+
+	/**
+	 * Register custom widget.
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_custom_widget() {
+		register_widget('Real_Estate_Object_Widget');
 	}
 
 }
