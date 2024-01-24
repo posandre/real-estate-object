@@ -30,16 +30,18 @@ class Real_Estate_Object_Widget extends WP_Widget {
 		$real_estate_objects_count = isset($instance['real_estate_objects_count']) ? esc_attr($instance['real_estate_objects_count']) : 10;
 		$real_estate_objects_per_page = isset($instance['real_estate_objects_per_page']) ? esc_attr($instance['real_estate_objects_per_page']) : 3;
 
-		?>
+		$output = '
 		<p>
-			<label for="<?php echo $this->get_field_id('real_estate_objects_count'); ?>"><?php _e('Count of Objects:', 'real-estate-object-widget'); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id('real_estate_objects_count'); ?>" name="<?php echo $this->get_field_name('real_estate_objects_count'); ?>" type="text" value="<?php echo $real_estate_objects_count; ?>" />
+			<label for="' .$this->get_field_id('real_estate_objects_count'). '">' .__('Count of Objects:', 'real-estate-object-widget'). '</label>
+			<input class="widefat" id="' .$this->get_field_id('real_estate_objects_count'). '" name="' .$this->get_field_name('real_estate_objects_count'). '" type="number" value="' .$real_estate_objects_count. '" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id('real_estate_objects_per_page'); ?>"><?php _e('Count of Objects per page:', 'real-estate-object-widget'); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id('real_estate_objects_per_page'); ?>" name="<?php echo $this->get_field_name('real_estate_objects_per_page'); ?>" type="text" value="<?php echo $real_estate_objects_per_page; ?>" />
-		</p>
-		<?php
+			<label for="' .$this->get_field_id('real_estate_objects_per_page'). '">' .__('Count of Objects per page:', 'real-estate-object-widget'). '</label>
+			<input class="widefat" id="' .$this->get_field_id('real_estate_objects_per_page'). '" name="' .$this->get_field_name('real_estate_objects_per_page'). '" type="number" value="' .$real_estate_objects_per_page. '" />
+		</p>		
+		';
+
+		echo $output;
 	}
 
 	// Save Widget Settings
