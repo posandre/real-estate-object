@@ -418,23 +418,24 @@ class Real_Estate_Object_Admin {
 
 				$real_estate_data .= '
 					<div class="real-estate__item">
-						<h3>' . $building_name . '</h3>
-						<p class="real-estate__location-coordinates">
-							<strong>' . __( 'Location coordinates: ', 'real-estate-object' ) . '</strong>
-							' . $location_coordinates . '
-						</p>
-						<p class="real-estate__floors-number">
-							<strong>' . __( 'Number of floors: ', 'real-estate-object' ) . '</strong>
-							' . $floors_number . '
-						</p>
-						<p class="real-estate__structure-type">
-							<strong>' . __( 'Type of Structure: ', 'real-estate-object' ) . '</strong>
-							' . $structure_type . '
-						</p>
-						<p class="real-estate__region">
-							<strong>' . __( 'Region: ', 'real-estate-object' ) . '</strong>
-							' . $region . '
-						</p>	
+							<h3>' . $building_name . '</h3>
+							<p class="real-estate__location-coordinates">
+								<strong>' . __( 'Location coordinates: ', 'real-estate-object' ) . '</strong>
+								' . $location_coordinates . '
+							</p>
+							<p class="real-estate__floors-number">
+								<strong>' . __( 'Number of floors: ', 'real-estate-object' ) . '</strong>
+								' . $floors_number . '
+							</p>
+							<p class="real-estate__structure-type">
+								<strong>' . __( 'Type of Structure: ', 'real-estate-object' ) . '</strong>
+								' . $structure_type . '
+							</p>
+							<p class="real-estate__region">
+								<strong>' . __( 'Region: ', 'real-estate-object' ) . '</strong>
+								' . $region . '
+							</p>	
+							<a href="' .get_permalink($real_estate_object->ID). '">' . __( 'Read more ...', 'real-estate-object' ) . '</a>
 					</div>			
 				';
 			}

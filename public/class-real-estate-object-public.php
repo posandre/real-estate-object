@@ -167,8 +167,8 @@ class Real_Estate_Object_Public {
 
 		$output  = '
 		<div class="' . implode(' ', $classes). '">
-			<div class="real-estate-objects-filter__title"><h2>' . __('Real estate object filter', $this->plugin_name) . '</h2></div>
 			<div id="real-estate-objects-filter-form" class="real-estate-objects-filter__form">
+				<h2>' . __('Real estate object filter', $this->plugin_name) . '</h2>
 				<label for="building-name"><strong>' . __('Name of building: ', $this->plugin_name) . '</strong><input id="building-name" name="building-name" type="text" value=""></label>
 				<label for="location-coordinates"><strong>' . __('Location coordinates: ', $this->plugin_name) . '</strong><input id="location-coordinates" name="location-coordinates" type="text" value=""></label>
 				<label for="floors-number"><strong>' . __('Number of floors: ', $this->plugin_name) . '</strong>
